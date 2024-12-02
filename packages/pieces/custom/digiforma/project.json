@@ -1,0 +1,43 @@
+{
+  "name": "pieces-digiforma",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/pieces/custom/digiforma/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/pieces/custom/digiforma",
+        "tsConfig": "packages/pieces/custom/digiforma/tsconfig.lib.json",
+        "packageJson": "packages/pieces/custom/digiforma/package.json",
+        "main": "packages/pieces/custom/digiforma/src/index.ts",
+        "assets": [
+          "packages/pieces/custom/digiforma/*.md"
+        ],
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs pieces-digiforma {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/pieces/custom/digiforma/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
