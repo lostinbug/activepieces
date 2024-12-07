@@ -15,7 +15,6 @@ import { authenticationServiceHooks } from './authentication/authentication-serv
 import { authenticationModule } from './authentication/authentication.module'
 import { accessTokenManager } from './authentication/lib/access-token-manager'
 import { copilotModule } from './copilot/copilot.module'
-import { requestWriterModule } from './copilot/request-writer/request-writer.module'
 import { rateLimitModule } from './core/security/rate-limit'
 import { securityHandlerChain } from './core/security/security-handler-chain'
 import { getRedisConnection } from './database/redis-connection'
@@ -91,7 +90,7 @@ import { invitationModule } from './user-invitations/user-invitation.module'
 import { webhookModule } from './webhooks/webhook-module'
 import { websocketService } from './websockets/websockets.service'
 import { flowConsumer } from './workers/consumer'
-import { webhookResponseWatcher } from './workers/helper/webhook-response-watcher'
+import { engineResponseWatcher } from './workers/engine-response-watcher'
 import { workerModule } from './workers/worker-module'
 
 export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> => {
@@ -209,7 +208,6 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
     await app.register(appEventRoutingModule)
     await app.register(authenticationModule)
     await app.register(copilotModule),
-    await app.register(requestWriterModule),
     await app.register(platformModule)
     await app.register(humanInputModule)
     await app.register(tagsModule)
@@ -335,7 +333,7 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
         logger.info('Shutting down')
         await flowConsumer.close()
         await systemJobsSchedule.close()
-        await webhookResponseWatcher.shutdown()
+        await engineResponseWatcher.shutdown()
     })
 
     return app
