@@ -366,3 +366,11 @@ export type AbandonInput = {
 	isJustified?: boolean;
 	trainingSessionSlotIds: Array<string>;
 };
+
+
+export type CreateCustomerTraineeInput = {
+	assessment?: string;
+	onWorkingTime?: boolean;
+	passed?: boolean;
+	traineeId: string;
+};

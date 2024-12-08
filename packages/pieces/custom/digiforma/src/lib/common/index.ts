@@ -255,6 +255,36 @@ export const digiformaCommon = {
         };
       },
     }),
+  customerTraineeId:(required=false,description = '')=>
+    Property.Dropdown<string>({
+      displayName: 'Customer Trainee ID',
+      description,
+      refreshers: ['customerId'],
+      required,
+      options: async ({ auth,customerId }) => {
+        if (!auth || !customerId) {
+          return {
+            disabled: true,
+            options: [],
+            placeholder: 'Please connect your account and select customer.',
+          };
+        }
+        const client = makeClient(auth as string);
+        const res: any = await client.listCustomerTrainees(customerId as string);
+
+        return {
+          disabled: false,
+          options: res['data']['customer']['customerTrainees'].map(
+            (customerTrainee: { id: string; trainee: { firstname: string; lastname: string } }) => {
+              return {
+                label: `${customerTrainee.trainee.firstname} ${customerTrainee.trainee.lastname}`,
+                value: customerTrainee.id,
+              };
+            }
+          )
+        };
+      },
+    }),
   managerId: (required = false, displayName = '', description = '') =>
     Property.Dropdown<string>({
       displayName,
@@ -356,7 +386,7 @@ export const digiformaCommon = {
           };
         }
         const client = makeClient(auth as string);
-        const res: any = await client.listPrograms();
+        const res: any = await client.listPrograms({rootLevelOnly:false});
         return {
           disabled: false,
           options: res['data']['programs'].map((program: { id: string; name: string }) => {

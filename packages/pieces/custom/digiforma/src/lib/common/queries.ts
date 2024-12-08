@@ -64,7 +64,6 @@ export const digifromaGraphQLQueries = {
         contracted
         contractedFundingUnknown
         conventionSigned
-        costSalary
         crmStatus
         estimatedTraineeCount
         foreignCustomer
@@ -104,6 +103,17 @@ export const digifromaGraphQLQueries = {
         subsessions{
             id
             name
+        }
+        entity{
+                __typename
+                ...on Trainee{
+                id
+                firstname
+                lastname
+            }
+            ...on Company{
+                name
+        }
         }
     }
 }`,
@@ -374,8 +384,10 @@ query searchQuotations($pagination:Pagination)
         }
     }`,
 	listPrograms: `
-  query{
-    programs{
+    query seachPrograms($filter:ProgramFilter)
+    {
+        programs(filters:$filter)
+        {
             accessDelay
             id
             name
@@ -474,7 +486,7 @@ query searchQuotations($pagination:Pagination)
                 sourceId
                 text
             }
-    }
+        }
 }`,
 	searchPrograms: `
         query seachPrograms($date_filters:DateFilter)
@@ -990,6 +1002,71 @@ query searchQuotations($pagination:Pagination)
             prefix
         }
     }`,
+    getInvoice: `
+    query getInvoice($id:ID!)
+    {
+        invoice(id:$id)
+        {
+             accountingAnalytics
+            paymentLimitDays
+            number
+            numberStr
+            isPaymentLimitEndMonth
+            trainingSession
+            {
+                id
+                name
+            }
+            prefix
+            reference
+            updatedAt
+            customer{
+                id
+            }
+            date
+            freeText
+            id
+            insertedAt
+            invoicePayments
+            {
+                id
+                amount
+                date
+                freeText
+                stripeId
+                mode
+                updatedAt
+                insertedAt
+            }
+            items
+            {
+                id
+                name
+                type
+                unitPrice
+                quantity
+                vat
+                description
+            }
+            recipient
+            {
+                    ...on Company{
+                        id
+                        name
+                    }
+                    ...on FundingAgency{
+                        id
+                        name
+                    }
+                    ...on Trainee{
+                        id
+                        firstname
+                        lastname
+                    }
+            }
+
+        }
+    }`,
 	searchInvoices: `
     query searchInvoices($date_filters:DateFilter,$pagination:Pagination)
     {
@@ -1346,6 +1423,49 @@ query searchQuotations($pagination:Pagination)
         }
     }
     `,
+    listAllTrainingSessions: `
+    query listAllTrainingSessions($pagination: Pagination)
+    {
+        trainingSessions(pagination:$pagination)
+        {
+           id
+           trainees
+           {
+                id
+                firstname
+                lastname
+           }
+           trainingSessionSlots
+           {
+                id
+                date
+                slot
+                customers
+                {
+                    id
+                    customerTrainees
+                    {
+                        id
+                    }
+                }
+                subsession
+                {
+                    id
+                    name
+                }
+                trainingSessionInstructors
+                {
+                    id
+                    instructor
+                    {
+                        id
+                        firstname
+                        lastname
+                    }
+                }
+           }
+        }
+    }`,
 	searchInstructorsInTrainingSession: `
     query searchInstructorsInTrainingSession($pagination: Pagination)
     {
@@ -1472,4 +1592,202 @@ query searchQuotations($pagination:Pagination)
             }
         }
     }`,
+    listCustomerTrainees:`
+     query listCustomerTrainees($customer_id:ID!)
+    {
+        customer(id:$customer_id)
+        {
+            customerTrainees
+            {   
+                id
+                signatures
+                {
+                    signature
+                    type
+                }
+                extranetUrl
+                assessment
+                passed
+                onWorkingTime
+                sessionCompletion
+                abandons
+                {
+                    comment
+                    commentJustifiedAbsence
+                    id
+                    insertedAt
+                    isAbandon
+                    isBack
+                    isJustified
+                    updatedAt    
+                }
+                trainee
+                {
+                    academyId
+                accountingNumber
+                birthCity
+                birthCityCode
+                birthName
+                birthRegion
+                birthdate
+                city
+                cityCode
+                civility
+                code
+                company{
+                    id
+                    name
+                }
+                companyId
+                companyName
+                country
+                countryCode
+                dpcAdeli
+                dpcMainStatus
+                dpcRpps
+                draft
+                email
+                externalId
+                firstname
+                freeText
+                grades{
+                    id
+                    label
+                    scoreResult
+                }
+                handicaped
+                hourlySalary
+                id
+                insertedAt
+                isPartialUnemployment
+                isSexualHarassmentVictim
+                isTerrorismVictim
+                lastDiploma
+                lastname
+                levelStudies
+                locale
+                logo{
+                    id
+                    filename
+                }
+                nationality
+                note
+                phone
+                phoneSecondary
+                position
+                profession
+                professionalCategory
+                roadAddress
+                siret
+                socialCategory
+                socialNumber
+                status
+                updatedAt
+                vat
+                vatAccountingCode
+                workContractType
+                }
+            }
+        }
+    }`,
+    getTrainingSessionSlot: `
+    query getTrainingSessionSlot($id:ID!)
+{
+    trainingSessionSlot(id:$id)
+    {
+        bypassConflicts
+        customers{
+            id
+            accountingNumber
+            updatedAt
+            insertedAt
+            costIndirect
+            contracted
+            contractedFundingUnknown
+            costDirect
+            crmStatus
+            conventionSigned
+            estimatedTraineeCount
+            foreignCustomer
+            jobless
+            manualBpf
+            manualBpfAmount
+            manualBpfHours
+            manualBpfHoursAmount
+            manualBpfOtherAmount
+            manualBpfPedagogicalAmount
+            manualBpfTraineesAmount
+            pipelineState
+            qualityExpectations
+            qualitySuccessConditions
+            specialPrice
+            stripeId
+        }
+        date
+        endTime
+        id
+        insertedAt
+        room
+        {
+            accessInstructions
+            addressExtra
+            addressRegulatoryCompliance
+            capacity
+            city
+            cityCode
+            contactEmail
+            contactName
+            contactPhone
+            country
+            countryCode
+            customFields
+            description
+            equipment
+            externalId
+            freeText
+            id
+            insertedAt
+            isGroupOrganisation
+            name
+            pricePerDay
+            pricePerHalfDay
+            roadLabel
+            roadNumber
+            roadRepetition
+            roadType
+            siret
+            updatedAt
+        }
+        slot
+        startTime
+        subsession
+        {
+            id
+            name
+            insertedAt
+            updatedAt
+            color
+            attendanceFromModules
+        }
+        trainingSessionInstructors
+        {
+            id
+            days
+            hours
+            vat
+            contractAccepted
+            cost
+            costMode
+            instructor
+            {
+                id
+                birthName
+                firstname
+                lastname
+            }
+        }
+    }
+}
+    `
+   
 };

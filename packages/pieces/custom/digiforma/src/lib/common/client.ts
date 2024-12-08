@@ -12,6 +12,7 @@ import {
 	AddInstructorToTrainingSessionInput,
 	CompanyInput,
 	CreateCustomerInput,
+	CreateCustomerTraineeInput,
 	CreateInvoiceInput,
 	CreateQuotationInput,
 	GradeInput,
@@ -105,6 +106,19 @@ export class DigiformaClient {
 		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.listCustomers);
 	}
 
+	async listCustomerTrainees(id: string) {
+		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.listCustomerTrainees, {
+			customer_id: id,
+		});
+	}
+
+	async createCustomerTrainee(customerId:string,request:CreateCustomerTraineeInput) {
+		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLMutations.createCustomerTrainee, {
+			customer_id:customerId,
+			trainee_input:request
+		});
+	}
+
 	async searchCustomers(dateFilters: { updatedAfter: string }) {
 		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.searchCustomers, {
 			date_filters: dateFilters,
@@ -183,8 +197,8 @@ export class DigiformaClient {
 		});
 	}
 
-	async listPrograms() {
-		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.listPrograms);
+	async listPrograms(filter:{rootLevelOnly:boolean}) {
+		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.listPrograms,{filter:filter});
 	}
 
 	async searchPrograms(dateFilters: { updatedAfter: string }) {
@@ -380,6 +394,12 @@ export class DigiformaClient {
 		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.listInvoices);
 	}
 
+	async getInvoice(id: string) {
+		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.getInvoice, {
+			id: id,
+		});
+	}
+
 	async searchInvoices(
 		dateFilters: { updatedAfter: string },
 		pagination: { page: number; size: number },
@@ -480,6 +500,22 @@ export class DigiformaClient {
 			},
 		);
 	}
+
+	async listAllTrainingSessions(pagination: { page: number; size: number }) {
+		return await this.makeRequest(
+			HttpMethod.POST,
+			digifromaGraphQLQueries.listAllTrainingSessions,
+			{
+				pagination: pagination,
+			},
+		);
+	}
+
+	async getTrainingSessionSlot(id: string) {
+		return await this.makeRequest(HttpMethod.POST, digifromaGraphQLQueries.getTrainingSessionSlot, {
+			id: id,
+		});
+	}	
 
 	async searchInstructorsInTrainingSession(pagination: { page: number; size: number }) {
 		return await this.makeRequest(

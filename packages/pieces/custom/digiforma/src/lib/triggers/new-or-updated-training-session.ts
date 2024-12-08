@@ -8,11 +8,12 @@ const polling: Polling<string, Record<string, unknown>> = {
 	strategy: DedupeStrategy.TIMEBASED,
 	items: async ({ auth, lastFetchEpochMS }) => {
 		const client = makeClient(auth as string);
+		const updatedAfter =lastFetchEpochMS === 0
+		? dayjs().subtract(1, 'day').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		: dayjs(lastFetchEpochMS).format('YYYY-MM-DDTHH:mm:ss.SSS');
+
 		const response: any = await client.searchTrainingSessions({
-			updatedAfter:
-				lastFetchEpochMS === 0
-					? dayjs().subtract(1, 'day').format('YYYY-MM-DDTHH:mm:ss.SSS')
-					: dayjs(lastFetchEpochMS).format('YYYY-MM-DDTHH:mm:ss.SSS'),
+			updatedAfter
 		});
 
 		return response['data']['trainingSessions'].map((trainingSession: any) => {

@@ -63,6 +63,10 @@ import { newOrUpdatedEvaluationTrigger } from './lib/triggers/new-or-updated-eva
 import { createAbandonInSlotAction } from './lib/actions/training-session/create-abandon-in-slot';
 import { updateSubsessionAction } from './lib/actions/training-session/update-subsession';
 import { listSubsessionsInTrainingSessionAction } from './lib/actions/training-session/list-subsessions';
+import { getCustomerTraineeAction } from './lib/actions/customer/get-customer-trainee';
+import { getInvoiceAction } from './lib/actions/invoice/get-invoice';
+import { addTraineeInCustomerAction } from './lib/actions/customer/add-trainee-in-customer';
+import { listTrainingSessionSlotsAction } from './lib/actions/training-session/list-training-session-slots';
 
 export const digiformaAuth = PieceAuth.SecretText({
 	displayName: 'Token',
@@ -88,7 +92,9 @@ export const digiforma = createPiece({
 		listQuotationsAction,
 		createCustomerAction,
 		updateCustomerAction,
+		addTraineeInCustomerAction,
 		listCustomersAction,
+		getCustomerTraineeAction,
 		listTraineesAction,
 		createProgramAction,
 		updateProgramAction,
@@ -114,6 +120,7 @@ export const digiforma = createPiece({
 		removeTraineeFromTrainingSessionAction,
 		createInvoiceAction,
 		updateInvoiceAction,
+		getInvoiceAction,
 		listInvoicesAction,
 		createInvoicePaymentAction,
 		updateInvoicePaymentAction,
@@ -122,6 +129,7 @@ export const digiforma = createPiece({
 		listContactsInCompanyAction,
 		addSlotsInTrainingSessionAction,
 		updateSlotInTrainingSessionAction,
+		listTrainingSessionSlotsAction,
 		addCustomerFundingAction,
 		updateCustomerFundingAction,
 		createSubsessionAction,
