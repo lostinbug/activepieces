@@ -49,8 +49,8 @@ export const newOrUpdatedCustomerFundingTrigger = createTrigger({
 	type: TriggerStrategy.POLLING,
 	props: {},
 	async test(context) {
-		const { store, auth, propsValue } = context;
-		return await pollingHelper.test(polling, { store, auth, propsValue });
+		const { store, auth, propsValue,files } = context;
+		return await pollingHelper.test(polling, { store, auth, propsValue,files });
 	},
 	async onEnable(context) {
 		const { store, auth, propsValue } = context;
@@ -63,8 +63,8 @@ export const newOrUpdatedCustomerFundingTrigger = createTrigger({
 	},
 
 	async run(context) {
-		const { store, auth, propsValue } = context;
-		return await pollingHelper.poll(polling, { store, auth, propsValue });
+		const { store, auth, propsValue,files } = context;
+		return await pollingHelper.poll(polling, { store, auth, propsValue,files });
 	},
 	sampleData: {
 		customerId: '3406281',
